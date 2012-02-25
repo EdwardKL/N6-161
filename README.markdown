@@ -1,7 +1,18 @@
-# About
+## About
+***
 This is the repository for Team Noble Six's 161 project.
 
-# Project Milestones
+## Team Members
+***
+* Victor Chang
+* Jason Jiang
+* Josef John
+* Ashwin Kamath
+* Edward Lu
+* Nathan Nandi
+
+## Project Milestones
+***
 * March 9 - Finish background study of the solution we want to implement, have a concrete idea of the functionality of our app, and understand Android permissions and OS.
 * March 16 - Learn the basics of how to program / create an Android app.
 * March 21 - Create a working app that can list all the other apps on the phone.
@@ -26,8 +37,8 @@ This is the repository for Team Noble Six's 161 project.
 
 
 
-# Measures of Success
-
+## Measures of Success
+***
 * Our app should be able to completely list all other apps on the phone and have these apps linked to a database that lists each app’s specific security policy.
 * The OS should consult our database whenever an app asks for an external resource.
 * The OS should comply perfectly with the policies listed in our database.
