@@ -1,5 +1,5 @@
 ## About
----
+***
 This is the repository for Team Noble Six's 161 project.
 
 ## Team Members
