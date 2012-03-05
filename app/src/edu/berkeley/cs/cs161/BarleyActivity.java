@@ -5,6 +5,8 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -34,11 +36,16 @@ public class BarleyActivity extends Activity
 		
 		allAppsListView.setAdapter(allAppsArrayAdapter);
 
+		//Add styling to the divider
+		int[] colors = {0xFF666666, 0xFFFFFFFF}; 
+		allAppsListView.setDivider(new GradientDrawable(Orientation.TOP_BOTTOM, colors));
+		allAppsListView.setDividerHeight(3);
 		
-		
+		//Insert the names of the apps into the list
 		if (pkgAppsList.size() > 0)
 		{
 			findViewById(R.id.app_list).setVisibility(View.VISIBLE);
+
 			for (ResolveInfo app: pkgAppsList)
 			{
 				allAppsArrayAdapter.add(app.activityInfo.name);
