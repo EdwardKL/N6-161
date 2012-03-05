@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, BarleyActivity!</string>
     <string name="app_name">Barley</string>
+    <string name="no_apps">Sorry, your device has no apps installed.</string>
 
 </resources>
