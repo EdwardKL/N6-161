@@ -12,5 +12,4 @@
         android:stackFromBottom="true"
         android:visibility="gone" 
         />
-
 </LinearLayout>
