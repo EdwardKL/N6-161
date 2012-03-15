@@ -9,13 +9,15 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class BarleyActivity extends Activity
 {
 	ArrayAdapter<String> allAppsArrayAdapter;
-
+	private static final int ACTIVITY_EDIT=1;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -32,6 +34,19 @@ public class BarleyActivity extends Activity
 
 		
 		ListView allAppsListView = (ListView) findViewById(R.id.app_list);
+
+		
+				
+		//Add click abilities
+		OnItemClickListener ocl = new OnItemClickListener(){
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id){
+				Intent edit = new Intent(parent.getContext(), PolicyEdit.class);
+				Object item = parent.getItemAtPosition(position);
+				edit.putExtra(PolicyEdit.APP_ID, item.toString());
+				startActivityForResult(edit, ACTIVITY_EDIT);
+			}
+		};
+		allAppsListView.setOnItemClickListener(ocl);
 		
 		
 		allAppsListView.setAdapter(allAppsArrayAdapter);
