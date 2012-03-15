@@ -39,8 +39,13 @@ public class PolicyEdit extends TabActivity {
 	    tabHost.addTab(spec);
 	    
 	    intent = new Intent().setClass(this, PhoneInfo.class);
-	    spec = tabHost.newTabSpec("filesys").setIndicator("Phone Info").setContent(intent);
+	    spec = tabHost.newTabSpec("phoneinfo").setIndicator("Phone Info").setContent(intent);
 	    tabHost.addTab(spec);
+	    
+	    intent = new Intent().setClass(this, PhoneFeatures.class);
+	    spec = tabHost.newTabSpec("phonefeatures").setIndicator("Phone Features").setContent(intent);
+	    tabHost.addTab(spec);
+
 
 
 	}
