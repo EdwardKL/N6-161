@@ -10,7 +10,7 @@ local.properties
 .launch
 .cproject
 .buildpath
-
+*.DS_Store
 *.apk
 *.ap_
 *.dex
