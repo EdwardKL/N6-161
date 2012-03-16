@@ -21,6 +21,8 @@
         <activity android:name=".PolicyEdit"></activity>
         <activity android:name=".Internet" />
 		<activity android:name=".FileSystem" />
+		<activity android:name=".PhoneInfo" />
+		<activity android:name=".PhoneFeatures" />
     </application>
 
 </manifest>

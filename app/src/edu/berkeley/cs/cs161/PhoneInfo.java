@@ -1,15 +1,14 @@
 package edu.berkeley.cs.cs161;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class Internet extends Activity {
+public class PhoneInfo extends Activity {
 	
-	private final String[] policies = new String[] {"Restrict Internet access completely", 
-			"Restrict downloading privileges", "Restrict uploading privileges"};
+	private final String[] policies = new String[] {"Restrict serial number access", 
+	"Restrict phone number access"};
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

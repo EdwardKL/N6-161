@@ -23,7 +23,7 @@ public class PolicyEdit extends TabActivity {
 		}
 		
 	    TabHost tabHost = getTabHost();  // The activity TabHost
-	    TabHost.TabSpec spec;  // Resusable TabSpec for each tab
+	    TabHost.TabSpec spec;  // Reusable TabSpec for each tab
 	    Intent intent;  // Reusable Intent for each tab
 
 	    // Create an Intent to launch an Activity for the tab (to be reused)
@@ -37,6 +37,15 @@ public class PolicyEdit extends TabActivity {
 	    intent = new Intent().setClass(this, FileSystem.class);
 	    spec = tabHost.newTabSpec("filesys").setIndicator("File System").setContent(intent);
 	    tabHost.addTab(spec);
+	    
+	    intent = new Intent().setClass(this, PhoneInfo.class);
+	    spec = tabHost.newTabSpec("phoneinfo").setIndicator("Phone Info").setContent(intent);
+	    tabHost.addTab(spec);
+	    
+	    intent = new Intent().setClass(this, PhoneFeatures.class);
+	    spec = tabHost.newTabSpec("phonefeatures").setIndicator("Phone Features").setContent(intent);
+	    tabHost.addTab(spec);
+
 
 
 	}
