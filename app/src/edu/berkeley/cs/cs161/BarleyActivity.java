@@ -5,15 +5,12 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ListView;
 
 public class BarleyActivity extends Activity
 {

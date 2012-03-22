@@ -1,7 +1,6 @@
 package edu.berkeley.cs.cs161;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
