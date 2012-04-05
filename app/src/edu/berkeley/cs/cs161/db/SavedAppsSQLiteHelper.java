@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import edu.berkeley.cs.cs161.FileSystem;
+import edu.berkeley.cs.cs161.Internet;
+import edu.berkeley.cs.cs161.PhoneFeatures;
+import edu.berkeley.cs.cs161.PhoneInfo;
 
 public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 {
@@ -30,7 +34,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	private static final String POLICIES_COLUMN_NAME = "name";
 	private static final String POLICIES_COLUMN_DESCRIPTION = "description";
 	private static final String POLICIES_TABLE_CREATE = "CREATE TABLE " + POLICIES_TABLE_NAME + " (" + POLICIES_PRIMARY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT , "
-			+ POLICIES_COLUMN_NAME + " TEXT" + POLICIES_COLUMN_DESCRIPTION + " TEXT);";
+			+ POLICIES_COLUMN_NAME + " TEXT , " + POLICIES_COLUMN_DESCRIPTION + " TEXT);";
 
 	public static String getAppsTableName()
 	{
@@ -78,6 +82,19 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		db.execSQL(APPS_TABLE_CREATE);
 		db.execSQL(APPS_POLICIES_TABLE_CREATE);
 		db.execSQL(POLICIES_TABLE_CREATE);
+		
+		for (String policy : Internet.policies) {
+			insertPolicyToPolicies(policy);
+		}
+		for (String policy : PhoneInfo.policies) {
+			insertPolicyToPolicies(policy);
+		}
+		for (String policy : PhoneFeatures.policies) {
+			insertPolicyToPolicies(policy);
+		}
+		for (String policy : FileSystem.policies) {
+			insertPolicyToPolicies(policy);
+		}
 	}
 
 	@Override

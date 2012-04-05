@@ -16,8 +16,9 @@ public class PolicyEdit extends TabActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
+		String appId = extras.getString(APP_ID);
 		if(extras!=null){
-			setTitle(extras.getString(APP_ID));
+			setTitle(appId);
 		}
 		
 	    TabHost tabHost = getTabHost();  // The activity TabHost
@@ -26,6 +27,7 @@ public class PolicyEdit extends TabActivity {
 
 	    // Create an Intent to launch an Activity for the tab (to be reused)
 	    intent = new Intent().setClass(this, Internet.class);
+	    intent.putExtra(APP_ID, appId);
 
 	    // Initialize a TabSpec for each tab and add it to the TabHost
 	    spec = tabHost.newTabSpec("internet").setIndicator("Internet").setContent(intent);
@@ -33,14 +35,17 @@ public class PolicyEdit extends TabActivity {
 	    
 	    // Do the same for the other tabs
 	    intent = new Intent().setClass(this, FileSystem.class);
+	    intent.putExtra(APP_ID, appId);
 	    spec = tabHost.newTabSpec("filesys").setIndicator("File System").setContent(intent);
 	    tabHost.addTab(spec);
 	    
 	    intent = new Intent().setClass(this, PhoneInfo.class);
+	    intent.putExtra(APP_ID, appId);
 	    spec = tabHost.newTabSpec("phoneinfo").setIndicator("Phone Info").setContent(intent);
 	    tabHost.addTab(spec);
 	    
 	    intent = new Intent().setClass(this, PhoneFeatures.class);
+	    intent.putExtra(APP_ID, appId);
 	    spec = tabHost.newTabSpec("phonefeatures").setIndicator("Phone Features").setContent(intent);
 	    tabHost.addTab(spec);
 

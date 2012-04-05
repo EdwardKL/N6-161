@@ -7,7 +7,7 @@ import android.widget.ListView;
 
 public class PhoneFeatures extends Activity{
 	
-	private final String[] policies = new String[] {"Restrict camera access", 
+	public static final String[] policies = new String[] {"Restrict camera access", 
 	"Restrict GPS access", "Restrict Bluetooth access", "Restrict SMS/MMS privileges"};
 	
     public void onCreate(Bundle savedInstanceState) {
