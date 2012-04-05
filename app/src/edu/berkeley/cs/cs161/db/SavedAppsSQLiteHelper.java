@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 {
 
-	private SQLiteDatabase db;
+	private static SQLiteDatabase db;
 	private static final String DATABASE_NAME = "saved_apps";
 	private static final int DATABASE_VERSION = 2;
 
@@ -79,7 +79,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		db.execSQL(APPS_TABLE_CREATE);
 		db.execSQL(APPS_POLICIES_TABLE_CREATE);
 		db.execSQL(POLICIES_TABLE_CREATE);
-		this.db=db;
+		SavedAppsSQLiteHelper.db=db;
 	}
 
 	@Override
