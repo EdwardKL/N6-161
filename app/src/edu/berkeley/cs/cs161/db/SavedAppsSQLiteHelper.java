@@ -110,6 +110,13 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		}
 	}
 
+	// removes permission from an app
+	public void removePermissionFromApp(String name, String permission) throws Exception
+	{
+		int appId = getAppId(name);
+		removePermissionFromAppId(name, permission, appId);
+	}
+
 	// get app's id and then call appPermissionToAppId
 	public void addPermissionToApp(String name, String permission) throws Exception
 	{
@@ -125,6 +132,14 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		int appId = results.getInt(results.getColumnIndex(APPS_PRIMARY_ID));
 		results.close();
 		return appId;
+	}
+
+	private void removePermissionFromAppId(String name, String permission, int appId) throws Exception
+	{
+		Cursor results = getReadableDatabase().query(POLICIES_TABLE_NAME, null, POLICIES_TABLE_NAME + "= ?", new String[] { permission }, null, null, null);
+		int policyId = results.getInt(results.getColumnIndex(POLICIES_PRIMARY_ID));
+
+		getReadableDatabase().delete(APPS_POLICIES_TABLE_NAME, APPS_POLICIES_COLUMN_APPS_ID + "=" + appId + " AND " + APPS_POLICIES_COLUMN_POLICIES_ID + "=" + policyId, null);
 	}
 
 	// If we already know what the app's id is just add associate a policy with the app
@@ -164,32 +179,32 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		return getReadableDatabase().insert(POLICIES_TABLE_NAME, null, values);
 	}
 
-	//Grab all permissions from a certain app
+	// Grab all permissions from a certain app
 	public String[] getAppPermissions(String name)
 	{
 		int appId = getAppId(name);
-		
-		//Grab all permissions that belong to the app
+
+		// Grab all permissions that belong to the app
 		String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a INNER JOIN " + APPS_POLICIES_TABLE_NAME + " b ON a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " WHERE b."
 				+ APPS_POLICIES_COLUMN_APPS_ID + "=?";
 
-		Cursor results = getReadableDatabase().rawQuery(query, new String[] { appId+"" });
+		Cursor results = getReadableDatabase().rawQuery(query, new String[] { appId + "" });
 
 		results.moveToFirst();
-		int count= results.getCount();
-		
+		int count = results.getCount();
+
 		String[] permissions = new String[count];
-		
-		//iterate through all permissions and build a String array.
-		for(int i=0;i<count;i++)
+
+		// iterate through all permissions and build a String array.
+		for (int i = 0; i < count; i++)
 		{
-			permissions[i]=results.getString(results.getColumnIndex(POLICIES_COLUMN_NAME));
+			permissions[i] = results.getString(results.getColumnIndex(POLICIES_COLUMN_NAME));
 			results.moveToNext();
 		}
 		results.close();
 		return permissions;
 	}
-	
+
 	public SavedApp getApp(String name)
 	{
 		return new SavedApp(name, getAppPermissions(name));
