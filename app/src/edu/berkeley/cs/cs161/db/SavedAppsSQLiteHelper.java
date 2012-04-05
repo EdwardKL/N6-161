@@ -13,7 +13,7 @@ import edu.berkeley.cs.cs161.PhoneInfo;
 public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 {
 
-	private SQLiteDatabase db;
+	private static SQLiteDatabase db;
 	private static final String DATABASE_NAME = "saved_apps";
 	private static final int DATABASE_VERSION = 2;
 
@@ -96,7 +96,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		for (String policy : FileSystem.policies) {
 			insertPolicyToPolicies(policy);
 		}
-		this.db=db;
+		SavedAppsSQLiteHelper.db=db;
 	}
 
 	@Override
