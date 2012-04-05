@@ -31,23 +31,39 @@ public class Internet extends Activity {
         appId = extras.getString(PolicyEdit.APP_ID);
         
         sqliteHelper = new SavedAppsSQLiteHelper(this);
-        String[] permissions = sqliteHelper.getAppPermissions(appId);
+        String[] permissions;
+		try {
+			permissions = sqliteHelper.getAppPermissions(appId);
+			
+	        for (int i = 0; i < policies.length; i++) {
+	        	for (String permission : permissions) {
+	        		if (permission.equals(policies[i])) {
+	        			lv.setItemChecked(i, true);
+	        			break;
+	        		}
+	        	}
+	        }
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         
-        for (int i = 0; i < policies.length; i++) {
-        	for (String permission : permissions) {
-        		if (permission.equals(policies[i])) {
-        			lv.setItemChecked(i, true);
-        			break;
-        		}
-        	}
-        }
-        
+        lv.setItemChecked(0, true);
         lv.setOnItemClickListener(new OnItemClickListener() {
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 	        	CheckedTextView check = (CheckedTextView)v;
-	        	if (check.isChecked()) {
+	        	if (!check.isChecked()) {
 	        		try {
 						sqliteHelper.addPermissionToApp(appId, policies[position]);
+					} catch (Exception e) {
+						((ListView)parent).setItemChecked(position, false);
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	        	} else {
+
+	        		try {
+						sqliteHelper.removePermissionFromApp(appId, policies[position]);
 					} catch (Exception e) {
 						check.setChecked(false);
 						// TODO Auto-generated catch block
