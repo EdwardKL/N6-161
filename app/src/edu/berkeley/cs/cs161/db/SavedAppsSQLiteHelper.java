@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 {
 
+	private SQLiteDatabase db;
 	private static final String DATABASE_NAME = "saved_apps";
 	private static final int DATABASE_VERSION = 2;
 
@@ -78,6 +79,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		db.execSQL(APPS_TABLE_CREATE);
 		db.execSQL(APPS_POLICIES_TABLE_CREATE);
 		db.execSQL(POLICIES_TABLE_CREATE);
+		this.db=db;
 	}
 
 	@Override
@@ -89,14 +91,14 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	public void deleteApp(String pkg_name)
 	{
-		getReadableDatabase().delete(APPS_TABLE_NAME, APPS_COLUMN_PKG_NAME + "= ?", new String[] { pkg_name });
+		db.delete(APPS_TABLE_NAME, APPS_COLUMN_PKG_NAME + "= ?", new String[] { pkg_name });
 	}
 
 	public void insertAppIntoTable(SavedApp input) throws Exception
 	{
 		ContentValues values = new ContentValues();
 		values.put(APPS_COLUMN_PKG_NAME, input.getName());
-		int appId = (int) (getReadableDatabase().insert(APPS_TABLE_NAME, null, values));
+		int appId = (int) (db.insert(APPS_TABLE_NAME, null, values));
 
 		// Add all the permissions that are currently set
 		setupPermissionsForApp(input.getName(), input.getPermissions(), appId);
@@ -127,7 +129,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	// Grab an app's db id
 	private int getAppId(String name)
 	{
-		Cursor results = getReadableDatabase().query(APPS_TABLE_NAME, null, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null, null, null);
+		Cursor results = db.query(APPS_TABLE_NAME, null, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null, null, null);
 		results.moveToFirst();
 		int appId = results.getInt(results.getColumnIndex(APPS_PRIMARY_ID));
 		results.close();
@@ -136,16 +138,16 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	private void removePermissionFromAppId(String name, String permission, int appId) throws Exception
 	{
-		Cursor results = getReadableDatabase().query(POLICIES_TABLE_NAME, null, POLICIES_TABLE_NAME + "= ?", new String[] { permission }, null, null, null);
+		Cursor results = db.query(POLICIES_TABLE_NAME, null, POLICIES_TABLE_NAME + "= ?", new String[] { permission }, null, null, null);
 		int policyId = results.getInt(results.getColumnIndex(POLICIES_PRIMARY_ID));
 
-		getReadableDatabase().delete(APPS_POLICIES_TABLE_NAME, APPS_POLICIES_COLUMN_APPS_ID + "=" + appId + " AND " + APPS_POLICIES_COLUMN_POLICIES_ID + "=" + policyId, null);
+		db.delete(APPS_POLICIES_TABLE_NAME, APPS_POLICIES_COLUMN_APPS_ID + "=" + appId + " AND " + APPS_POLICIES_COLUMN_POLICIES_ID + "=" + policyId, null);
 	}
 
 	// If we already know what the app's id is just add associate a policy with the app
 	private void addPermissionToAppId(String name, String permission, int appId) throws Exception
 	{
-		Cursor results = getReadableDatabase().query(POLICIES_TABLE_NAME, null, POLICIES_TABLE_NAME + "= ?", new String[] { permission }, null, null, null);
+		Cursor results = db.query(POLICIES_TABLE_NAME, null, POLICIES_TABLE_NAME + "= ?", new String[] { permission }, null, null, null);
 
 		int policyId;
 		// policy doesn't exist, add to db
@@ -167,7 +169,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		ContentValues values = new ContentValues();
 		values.put(APPS_POLICIES_COLUMN_APPS_ID, appId);
 		values.put(APPS_POLICIES_COLUMN_POLICIES_ID, policyId);
-		getReadableDatabase().insert(APPS_POLICIES_TABLE_NAME, null, values);
+		db.insert(APPS_POLICIES_TABLE_NAME, null, values);
 		results.close();
 	}
 
@@ -176,7 +178,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	{
 		ContentValues values = new ContentValues();
 		values.put(POLICIES_COLUMN_NAME, name);
-		return getReadableDatabase().insert(POLICIES_TABLE_NAME, null, values);
+		return db.insert(POLICIES_TABLE_NAME, null, values);
 	}
 
 	// Grab all permissions from a certain app
@@ -188,7 +190,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a INNER JOIN " + APPS_POLICIES_TABLE_NAME + " b ON a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " WHERE b."
 				+ APPS_POLICIES_COLUMN_APPS_ID + "=?";
 
-		Cursor results = getReadableDatabase().rawQuery(query, new String[] { appId + "" });
+		Cursor results = db.rawQuery(query, new String[] { appId + "" });
 
 		results.moveToFirst();
 		int count = results.getCount();
