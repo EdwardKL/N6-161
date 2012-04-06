@@ -7,7 +7,7 @@ import android.widget.ListView;
 
 public class FileSystem extends Activity {
 	
-	private final String[] policies = new String[] {"Cannot read files", 
+	public static final String[] policies = new String[] {"Cannot read files", 
 	"Cannot write to file", "Cannot execute files"};
 	
     public void onCreate(Bundle savedInstanceState) {
@@ -19,4 +19,6 @@ public class FileSystem extends Activity {
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         setContentView(lv);
     }
+    
+    
 }

@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import edu.berkeley.cs.cs161.FileSystem;
+import edu.berkeley.cs.cs161.Internet;
+import edu.berkeley.cs.cs161.PhoneFeatures;
+import edu.berkeley.cs.cs161.PhoneInfo;
 
 public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 {
@@ -31,7 +35,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	private static final String POLICIES_COLUMN_NAME = "name";
 	private static final String POLICIES_COLUMN_DESCRIPTION = "description";
 	private static final String POLICIES_TABLE_CREATE = "CREATE TABLE " + POLICIES_TABLE_NAME + " (" + POLICIES_PRIMARY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT , "
-			+ POLICIES_COLUMN_NAME + " TEXT" + POLICIES_COLUMN_DESCRIPTION + " TEXT);";
+			+ POLICIES_COLUMN_NAME + " TEXT , " + POLICIES_COLUMN_DESCRIPTION + " TEXT);";
 
 	public static String getAppsTableName()
 	{
@@ -71,6 +75,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	public SavedAppsSQLiteHelper(Context context)
 	{
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		db = getReadableDatabase();
 	}
 
 	@Override
@@ -79,7 +84,25 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		db.execSQL(APPS_TABLE_CREATE);
 		db.execSQL(APPS_POLICIES_TABLE_CREATE);
 		db.execSQL(POLICIES_TABLE_CREATE);
-		SavedAppsSQLiteHelper.db=db;
+
+		SavedAppsSQLiteHelper.db = db;
+
+		for (String policy : Internet.policies)
+		{
+			insertPolicyToPolicies(policy);
+		}
+		for (String policy : PhoneInfo.policies)
+		{
+			insertPolicyToPolicies(policy);
+		}
+		for (String policy : PhoneFeatures.policies)
+		{
+			insertPolicyToPolicies(policy);
+		}
+		for (String policy : FileSystem.policies)
+		{
+			insertPolicyToPolicies(policy);
+		}
 	}
 
 	@Override
@@ -94,7 +117,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		db.delete(APPS_TABLE_NAME, APPS_COLUMN_PKG_NAME + "= ?", new String[] { pkg_name });
 	}
 
-	public void insertAppIntoTable(SavedApp input) throws Exception
+	public int insertAppIntoTable(SavedApp input) throws Exception
 	{
 		ContentValues values = new ContentValues();
 		values.put(APPS_COLUMN_PKG_NAME, input.getName());
@@ -102,6 +125,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 		// Add all the permissions that are currently set
 		setupPermissionsForApp(input.getName(), input.getPermissions(), appId);
+		return appId;
 	}
 
 	private void setupPermissionsForApp(String name, String[] permissions, int appId) throws Exception
@@ -127,19 +151,31 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	}
 
 	// Grab an app's db id
-	private int getAppId(String name)
+	private int getAppId(String name) throws Exception
 	{
-		Cursor results = db.query(APPS_TABLE_NAME, null, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null, null, null);
-		results.moveToFirst();
-		int appId = results.getInt(results.getColumnIndex(APPS_PRIMARY_ID));
-		results.close();
-		return appId;
+		try
+		{
+			Cursor results = db.query(APPS_TABLE_NAME, null, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null, null, null);
+			if(results.getCount()==0)
+			{
+				return insertAppIntoTable(new SavedApp(name, new String[] {}));
+			}
+			results.moveToFirst();
+			int appId = results.getInt(results.getColumnIndex(APPS_PRIMARY_ID));
+			results.close();
+			return appId;
+		}
+		catch (NullPointerException npe)
+		{
+			return insertAppIntoTable(new SavedApp(name, new String[] {}));
+		}
 	}
 
 	private void removePermissionFromAppId(String name, String permission, int appId) throws Exception
 	{
-		Cursor results = db.query(POLICIES_TABLE_NAME, null, POLICIES_TABLE_NAME + "= ?", new String[] { permission }, null, null, null);
-		int policyId = results.getInt(results.getColumnIndex(POLICIES_PRIMARY_ID));
+		Cursor results = db.query(POLICIES_TABLE_NAME, new String[] {POLICIES_PRIMARY_ID}, POLICIES_COLUMN_NAME + "= ?", new String[] { permission }, null, null, null);
+		results.moveToFirst();
+		int policyId = results.getInt(results.getColumnIndexOrThrow(POLICIES_PRIMARY_ID));
 
 		db.delete(APPS_POLICIES_TABLE_NAME, APPS_POLICIES_COLUMN_APPS_ID + "=" + appId + " AND " + APPS_POLICIES_COLUMN_POLICIES_ID + "=" + policyId, null);
 	}
@@ -147,7 +183,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	// If we already know what the app's id is just add associate a policy with the app
 	private void addPermissionToAppId(String name, String permission, int appId) throws Exception
 	{
-		Cursor results = db.query(POLICIES_TABLE_NAME, null, POLICIES_TABLE_NAME + "= ?", new String[] { permission }, null, null, null);
+		Cursor results = db.query(POLICIES_TABLE_NAME, null, POLICIES_COLUMN_NAME + "= ?", new String[] { permission }, null, null, null);
 
 		int policyId;
 		// policy doesn't exist, add to db
@@ -182,7 +218,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	}
 
 	// Grab all permissions from a certain app
-	public String[] getAppPermissions(String name)
+	public String[] getAppPermissions(String name) throws Exception
 	{
 		int appId = getAppId(name);
 
@@ -207,7 +243,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		return permissions;
 	}
 
-	public SavedApp getApp(String name)
+	public SavedApp getApp(String name) throws Exception
 	{
 		return new SavedApp(name, getAppPermissions(name));
 	}
