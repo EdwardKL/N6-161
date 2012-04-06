@@ -1,5 +1,6 @@
 package edu.berkeley.cs.cs161;
 
+import edu.berkeley.cs.cs161.db.SavedAppsSQLiteHelper;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;

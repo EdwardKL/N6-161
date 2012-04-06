@@ -103,6 +103,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		{
 			insertPolicyToPolicies(policy);
 		}
+
 	}
 
 	@Override
@@ -156,7 +157,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		try
 		{
 			Cursor results = db.query(APPS_TABLE_NAME, null, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null, null, null);
-			if(results.getCount()==0)
+			if (results.getCount() == 0)
 			{
 				return insertAppIntoTable(new SavedApp(name, new String[] {}));
 			}
@@ -173,7 +174,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	private void removePermissionFromAppId(String name, String permission, int appId) throws Exception
 	{
-		Cursor results = db.query(POLICIES_TABLE_NAME, new String[] {POLICIES_PRIMARY_ID}, POLICIES_COLUMN_NAME + "= ?", new String[] { permission }, null, null, null);
+		Cursor results = db.query(POLICIES_TABLE_NAME, new String[] { POLICIES_PRIMARY_ID }, POLICIES_COLUMN_NAME + "= ?", new String[] { permission }, null, null, null);
 		results.moveToFirst();
 		int policyId = results.getInt(results.getColumnIndexOrThrow(POLICIES_PRIMARY_ID));
 
