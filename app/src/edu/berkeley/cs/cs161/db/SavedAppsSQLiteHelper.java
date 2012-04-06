@@ -15,7 +15,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	private static SQLiteDatabase db;
 	private static final String DATABASE_NAME = "saved_apps";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 
 	private static final String APPS_TABLE_NAME = "saved_apps";
 	private static final String APPS_PRIMARY_ID = "id";
@@ -27,8 +27,9 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	private static final String APPS_POLICIES_PRIMARY_ID = "id";
 	private static final String APPS_POLICIES_COLUMN_APPS_ID = "app_id";
 	private static final String APPS_POLICIES_COLUMN_POLICIES_ID = "policy_id";
+	private static final String APPS_POLICIES_COLUMN_ENABLED = "enabled";
 	private static final String APPS_POLICIES_TABLE_CREATE = "CREATE TABLE " + APPS_POLICIES_TABLE_NAME + " (" + APPS_POLICIES_PRIMARY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT , "
-			+ APPS_POLICIES_COLUMN_APPS_ID + " INTEGER, " + APPS_POLICIES_COLUMN_POLICIES_ID + " INTEGER);";
+			+ APPS_POLICIES_COLUMN_APPS_ID + " INTEGER, " + APPS_POLICIES_COLUMN_POLICIES_ID + " INTEGER, " + APPS_POLICIES_COLUMN_ENABLED + " BOOLEAN);";
 
 	private static final String POLICIES_TABLE_NAME = "all_policies";
 	private static final String POLICIES_PRIMARY_ID = "id";
@@ -109,8 +110,8 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 	{
-		// TODO Auto-generated method stub
-
+		String sql = "ALTER TABLE " + APPS_POLICIES_TABLE_NAME + " ADD COLUMN " + APPS_POLICIES_COLUMN_ENABLED + " BOOLEAN";
+		db.execSQL(sql);
 	}
 
 	public void deleteApp(String pkg_name)
@@ -178,7 +179,10 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		results.moveToFirst();
 		int policyId = results.getInt(results.getColumnIndexOrThrow(POLICIES_PRIMARY_ID));
 
-		db.delete(APPS_POLICIES_TABLE_NAME, APPS_POLICIES_COLUMN_APPS_ID + "=" + appId + " AND " + APPS_POLICIES_COLUMN_POLICIES_ID + "=" + policyId, null);
+		ContentValues val = new ContentValues();
+		val.put(APPS_POLICIES_COLUMN_ENABLED, false);
+
+		db.update(APPS_POLICIES_TABLE_NAME, val, APPS_POLICIES_COLUMN_APPS_ID + "=? AND " + APPS_POLICIES_COLUMN_POLICIES_ID + "=?", new String[] { appId + "", policyId + "" });
 	}
 
 	// If we already know what the app's id is just add associate a policy with the app
@@ -205,6 +209,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		// insert the two foreign keys into the association table
 		ContentValues values = new ContentValues();
 		values.put(APPS_POLICIES_COLUMN_APPS_ID, appId);
+		values.put(APPS_POLICIES_COLUMN_ENABLED, true);
 		values.put(APPS_POLICIES_COLUMN_POLICIES_ID, policyId);
 		db.insert(APPS_POLICIES_TABLE_NAME, null, values);
 		results.close();
@@ -227,6 +232,23 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a INNER JOIN " + APPS_POLICIES_TABLE_NAME + " b ON a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " WHERE b."
 				+ APPS_POLICIES_COLUMN_APPS_ID + "=?";
 
+		return getPermissionsFromQuery(appId, query);
+	}
+
+	// Only grab the enabled app permissions
+	public String[] getEnabledAppPermissions(String name) throws Exception
+	{
+		int appId = getAppId(name);
+
+		// Grab all permissions that belong to the app
+		String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a INNER JOIN " + APPS_POLICIES_TABLE_NAME + " b ON a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " WHERE b."
+				+ APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=TRUE";
+
+		return getPermissionsFromQuery(appId, query);
+	}
+
+	private String[] getPermissionsFromQuery(int appId, String query)
+	{
 		Cursor results = db.rawQuery(query, new String[] { appId + "" });
 
 		results.moveToFirst();
