@@ -15,8 +15,7 @@ public class PhoneInfo extends Activity {
 
         ListView lv = new ListView(this);
         lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, policies));
-        lv.setItemsCanFocus(false);
-        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        PolicyEdit.loadListViewWithPolicies(lv, policies);
         setContentView(lv);
     }
 }
