@@ -33,7 +33,7 @@ public class Internet extends Activity {
         sqliteHelper = new SavedAppsSQLiteHelper(this);
         String[] permissions;
 		try {
-			permissions = sqliteHelper.getAppPermissions(appId);
+			permissions = sqliteHelper.getEnabledAppPermissions(appId);
 			
 	        for (int i = 0; i < policies.length; i++) {
 	        	for (String permission : permissions) {
@@ -43,12 +43,12 @@ public class Internet extends Activity {
 	        		}
 	        	}
 	        }
+
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         
-        lv.setItemChecked(0, true);
         lv.setOnItemClickListener(new OnItemClickListener() {
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 	        	CheckedTextView check = (CheckedTextView)v;

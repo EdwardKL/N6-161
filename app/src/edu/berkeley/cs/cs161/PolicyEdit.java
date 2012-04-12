@@ -48,10 +48,5 @@ public class PolicyEdit extends TabActivity {
 	    intent.putExtra(APP_ID, appId);
 	    spec = tabHost.newTabSpec("phonefeatures").setIndicator("Phone Features").setContent(intent);
 	    tabHost.addTab(spec);
-
-
-
 	}
-
-
 }
