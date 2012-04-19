@@ -7,8 +7,8 @@ import android.widget.ListView;
 
 public class PhoneInfo extends Activity {
 	
-	public static final String[] policies = new String[] {"Restrict serial number access", 
-	"Restrict phone number access"};
+	public static final String[] policies = new String[] {"Cannot MODIFY_PHONE_STATE", 
+	"Cannot READ_PHONE_STATE", "Cannot PROCESS_OUTGOING_CALLS"};
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

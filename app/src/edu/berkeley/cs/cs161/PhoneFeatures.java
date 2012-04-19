@@ -7,8 +7,10 @@ import android.widget.ListView;
 
 public class PhoneFeatures extends Activity{
 	
-	public static final String[] policies = new String[] {"Restrict camera access", 
-	"Restrict GPS access", "Restrict Bluetooth access", "Restrict SMS/MMS privileges"};
+	public static final String[] policies = new String[] {"Cannot ACCESS_COARSE_LOCATION", 
+	"Cannot ACCESS_FINE_LOCATION", "Cannot ADD_VOICEMAIL", "Cannot CALL_PHONE", 
+	"Not CALL_PRIVILEGED", "Cannot use BLUETOOTH", "Cannot use CAMERA", 
+	"Cannot DISABLE_KEYGUARD", "Cannot RECORD_AUDIO", "Cannot SEND_SMS"};
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

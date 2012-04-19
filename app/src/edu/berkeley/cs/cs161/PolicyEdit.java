@@ -1,21 +1,24 @@
 package edu.berkeley.cs.cs161;
 
-import edu.berkeley.cs.cs161.db.SavedAppsSQLiteHelper;
+import java.util.Set;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.AdapterView.OnItemClickListener;
+import edu.berkeley.cs.cs161.db.SavedAppsSQLiteHelper;
 
 
 public class PolicyEdit extends TabActivity {
 	
 	public static final String APP_ID = "app_id";
 	public static final String APP_NAME = "name";
+	private static final int GET_PERMISSIONS = 4096;
 
 	private static String appId;
 	private static SavedAppsSQLiteHelper sqliteHelper;
@@ -30,6 +33,30 @@ public class PolicyEdit extends TabActivity {
 		if(extras!=null){
 			setTitle(appId);
 		}
+		
+		//add the initial permissions to the database if first time opening this App
+		/*---------------------------WORK IN PROGRESS-------------------------------------
+		String[] masterList = ArrayUtils.addAll(FileSystem.policies, Internet.policices, 
+												PhoneFeatures.policies, PhoneInfo.policies);
+		
+		if apps_policies is not enabled for this app { 
+			try {
+				PackageInfo packInf = getPackageManager().getPackageInfo(appId, GET_PERMISSIONS); //get permissions is a flag
+				PermissionInfo[] permInf = packInf.permissions;
+				for (Permission p:perminf) {
+					String permissionName = p.getName();
+					String permissionDescription = p.toString();
+					if masterList.contains(permissionName) {
+						add permissionName and permissionDescription into database;
+						set app_policices for appId to True;
+					}
+				}
+			} catch (Exception e0) {
+				// TODO Auto-generated catch block
+				e0.printStackTrace();
+			}
+		}
+		 ------------------------------------------------------------------------------*/
 		
 	    TabHost tabHost = getTabHost();  // The activity TabHost
 	    TabHost.TabSpec spec;  // Reusable TabSpec for each tab
