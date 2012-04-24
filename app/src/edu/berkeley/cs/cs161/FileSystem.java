@@ -6,21 +6,25 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class FileSystem extends Activity {
-	
-	public static final String[] policies = new String[] {"Cannot AUTHENTICATE_ACCOUNTS", 
-		"Cannot DELETE_PACKAGES", "Cannot INSTALL_PACKAGES", "Cannot GET_ACCOUNTS", 
-		"Cannot READ_CALENDAR", "Cannot READ_CONTACTS", "Cannot READ_PROFILE", 
-		"Cannot READ_SMS", "Cannot WRITE_CALENDAR", "Cannot WRITE_CONTACTS", 
-		"Cannot WRITE_PROFILE", "Cannot WRITE_SMS"};
-	
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        ListView lv = new ListView(this);
-        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, policies));
-        PolicyEdit.loadListViewWithPolicies(lv, policies);
-        setContentView(lv);
-    }
-    
-    
+	public static final String[] policyList = new String[] {"AUTHENTICATE_ACCOUNTS", 
+		"DELETE_PACKAGES", "INSTALL_PACKAGES", "GET_ACCOUNTS", 
+		"READ_CALENDAR", "READ_CONTACTS", "READ_PROFILE", 
+		"READ_SMS", "WRITE_CALENDAR", "WRITE_CONTACTS", 
+		"WRITE_PROFILE", "WRITE_SMS"};
+	
+	public static String[] policies = new String[policyList.length];
+			
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		PolicyEdit.loadReadablePolicies(policies, policyList);
+
+		ListView lv = new ListView(this);
+		lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, policies));
+		PolicyEdit.loadListViewWithPolicies(lv, policyList);
+		setContentView(lv);
+	}
+
+
 }

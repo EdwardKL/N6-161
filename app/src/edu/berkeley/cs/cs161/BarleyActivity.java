@@ -26,7 +26,7 @@ public class BarleyActivity extends Activity
 		//Find a list of all installed apps
 		final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 		mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-		final List<ResolveInfo> pkgAppsList = getPackageManager().queryIntentActivities( mainIntent, 0);
+		final List<ResolveInfo> pkgAppsList = getPackageManager().queryIntentActivities(mainIntent, 0);
 		
 		allAppsArrayAdapter = new ArrayAdapter<String>(this, R.layout.app_display);
 		GridView gridview = (GridView) findViewById(R.id.gridview);
@@ -38,13 +38,10 @@ public class BarleyActivity extends Activity
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				Intent edit = new Intent(parent.getContext(), PolicyEdit.class);
 				ResolveInfo item = (ResolveInfo) parent.getItemAtPosition(position);
-				System.out.println(item.toString());
-				edit.putExtra(PolicyEdit.APP_ID, item.activityInfo.name.toString());
+				edit.putExtra(PolicyEdit.APP_ID, item.activityInfo.packageName);
 				startActivityForResult(edit, ACTIVITY_EDIT);
 	        }
 	    });
-		
-		
 		
 	}
 }

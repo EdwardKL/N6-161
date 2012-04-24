@@ -155,22 +155,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	// Grab an app's db id
 	private int getAppId(String name) throws Exception
 	{
-		try
+		Cursor results = db.query(APPS_TABLE_NAME, null, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null, null, null);
+		if (results.getCount() == 0)
 		{
-			Cursor results = db.query(APPS_TABLE_NAME, null, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null, null, null);
-			if (results.getCount() == 0)
-			{
-				return insertAppIntoTable(new SavedApp(name, new String[] {}));
-			}
-			results.moveToFirst();
-			int appId = results.getInt(results.getColumnIndex(APPS_PRIMARY_ID));
-			results.close();
-			return appId;
+			return -1;
 		}
-		catch (NullPointerException npe)
-		{
-			return insertAppIntoTable(new SavedApp(name, new String[] {}));
-		}
+		results.moveToFirst();
+		int appId = results.getInt(results.getColumnIndex(APPS_PRIMARY_ID));
+		results.close();
+		return appId;
 	}
 
 	private void removePermissionFromAppId(String name, String permission, int appId) throws Exception
@@ -227,6 +220,10 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	public String[] getAppPermissions(String name) throws Exception
 	{
 		int appId = getAppId(name);
+		
+		if (appId == -1) {
+			return null;
+		}
 
 		// Grab all permissions that belong to the app
 		String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a INNER JOIN " + APPS_POLICIES_TABLE_NAME + " b ON a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " WHERE b."
