@@ -29,6 +29,11 @@ public class SavedAppsContentProvider extends ContentProvider
 		return Uri.withAppendedPath(uri, "" + db.getWritableDatabase().insert(uri.getPath(), null, values));
 	}
 
+	public static void init()
+	{
+		db = new SavedAppsSQLiteHelper(null);
+	}
+	
 	@Override
 	public boolean onCreate()
 	{
@@ -49,44 +54,44 @@ public class SavedAppsContentProvider extends ContentProvider
 		return db.getWritableDatabase().update(uri.getPath(), values, selection, selectionArgs);
 	}
 	
-	public static void deleteApp(String pkg_name)
+	public void deleteApp(String pkg_name)
 	{
 		db.deleteApp(pkg_name);
 	}
 	
-	public static int insertAppIntoTable(SavedApp input) throws Exception
+	public int insertAppIntoTable(SavedApp input) throws Exception
 	{
 		return db.insertAppIntoTable(input);
 	}
 
 
 	// removes permission from an app
-	public static void removePermissionFromApp(String name, String permission) throws Exception
+	public void removePermissionFromApp(String name, String permission) throws Exception
 	{
 		db.removePermissionFromApp(name, permission);
 	}
 
 	// get app's id and then call appPermissionToAppId
-	public static void addPermissionToApp(String name, String permission) throws Exception
+	public void addPermissionToApp(String name, String permission) throws Exception
 	{
 		db.addPermissionToApp(name, permission);
 	}
 
 
 	// Grab all permissions from a certain app
-	public static String[] getAppPermissions(String name) throws Exception
+	public String[] getAppPermissions(String name) throws Exception
 	{
 		return db.getAppPermissions(name);
 	}
 
 	// Only grab the enabled app permissions
-	public static String[] getEnabledAppPermissions(String name) throws Exception
+	public String[] getEnabledAppPermissions(String name) throws Exception
 	{
 		return db.getEnabledAppPermissions(name);
 	}
 
 	
-	public static SavedApp getApp(String name) throws Exception
+	public SavedApp getApp(String name) throws Exception
 	{
 		return new SavedApp(name, getAppPermissions(name));
 	}
