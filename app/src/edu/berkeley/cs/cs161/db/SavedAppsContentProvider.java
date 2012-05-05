@@ -10,6 +10,16 @@ public class SavedAppsContentProvider extends ContentProvider
 
 	private static SavedAppsSQLiteHelper db;
 
+	private static final String APPS_TABLE_NAME = "saved_apps";
+	private static final String APPS_PRIMARY_ID = "id";
+	private static final String APPS_COLUMN_PKG_NAME = "pkg_name";
+
+	private static final String APPS_POLICIES_TABLE_NAME = "apps_policies";
+	private static final String APPS_POLICIES_COLUMN_APPS_ID = "app_id";
+	private static final String APPS_POLICIES_COLUMN_POLICIES_ID = "policy_id";
+	private static final String APPS_POLICIES_COLUMN_ENABLED = "enabled";
+
+	private static final String POLICIES_COLUMN_NAME = "name";
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs)
@@ -29,11 +39,6 @@ public class SavedAppsContentProvider extends ContentProvider
 		return Uri.withAppendedPath(uri, "" + db.getWritableDatabase().insert(uri.getPath(), null, values));
 	}
 
-	public static void init()
-	{
-		db = new SavedAppsSQLiteHelper(null);
-	}
-	
 	@Override
 	public boolean onCreate()
 	{
@@ -44,7 +49,7 @@ public class SavedAppsContentProvider extends ContentProvider
 	@Override
 	public Cursor query(Uri table, String[] columns, String selection, String[] selectionArgs, String sortOrder)
 	{
-		return db.getWritableDatabase().query(table.getPath(), columns, selection, selectionArgs,null,null, sortOrder);
+		return db.getWritableDatabase().query(table.getPath(), columns, selection, selectionArgs, null, null, sortOrder);
 	}
 
 	@Override
@@ -53,47 +58,47 @@ public class SavedAppsContentProvider extends ContentProvider
 
 		return db.getWritableDatabase().update(uri.getPath(), values, selection, selectionArgs);
 	}
-	
-	public void deleteApp(String pkg_name)
-	{
-		db.deleteApp(pkg_name);
-	}
-	
-	public int insertAppIntoTable(SavedApp input) throws Exception
-	{
-		return db.insertAppIntoTable(input);
-	}
-
-
-	// removes permission from an app
-	public void removePermissionFromApp(String name, String permission) throws Exception
-	{
-		db.removePermissionFromApp(name, permission);
-	}
-
-	// get app's id and then call appPermissionToAppId
-	public void addPermissionToApp(String name, String permission) throws Exception
-	{
-		db.addPermissionToApp(name, permission);
-	}
-
-
-	// Grab all permissions from a certain app
-	public String[] getAppPermissions(String name) throws Exception
-	{
-		return db.getAppPermissions(name);
-	}
 
 	// Only grab the enabled app permissions
 	public String[] getEnabledAppPermissions(String name) throws Exception
 	{
-		return db.getEnabledAppPermissions(name);
+		int appId = getAppId(name);
+
+		// Grab all permissions that belong to the app
+//		String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a, " + APPS_POLICIES_TABLE_NAME + " b WHERE a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " AND b."
+//				+ APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;";
+
+		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161/"+APPS_POLICIES_TABLE_NAME),new String[]{"*"},  "a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " AND b."
+				+ APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;",new String[] { appId + "" },null);
+
+		results.moveToFirst();
+		int count = results.getCount();
+
+		String[] permissions = new String[count];
+
+		// iterate through all permissions and build a String array.
+		for (int i = 0; i < count; i++)
+		{
+			permissions[i] = results.getString(results.getColumnIndex(POLICIES_COLUMN_NAME));
+			results.moveToNext();
+		}
+		results.close();
+		return permissions;
 	}
 
-	
-	public SavedApp getApp(String name) throws Exception
+	// Grab an app's db id
+	private int getAppId(String name) throws Exception
 	{
-		return new SavedApp(name, getAppPermissions(name));
+		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161/"+APPS_TABLE_NAME), new String[]{"id"}, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null);
+		
+		if (results.getCount() == 0)
+		{
+			return -1;
+		}
+		results.moveToFirst();
+		int appId = results.getInt(results.getColumnIndex(APPS_PRIMARY_ID));
+		results.close();
+		return appId;
 	}
-	
+
 }
