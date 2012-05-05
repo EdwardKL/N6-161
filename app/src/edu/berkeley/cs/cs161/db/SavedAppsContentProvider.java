@@ -2,7 +2,10 @@ package edu.berkeley.cs.cs161.db;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class SavedAppsContentProvider extends ContentProvider
@@ -20,6 +23,15 @@ public class SavedAppsContentProvider extends ContentProvider
 	private static final String APPS_POLICIES_COLUMN_ENABLED = "enabled";
 
 	private static final String POLICIES_COLUMN_NAME = "name";
+
+	private static final String AUTHORITY = "edu.berkeley.cs.cs161.db";
+
+	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+	static
+	{
+		sURIMatcher.addURI(AUTHORITY, APPS_TABLE_NAME, 0);
+		sURIMatcher.addURI(AUTHORITY, APPS_POLICIES_TABLE_NAME, 1);
+	}
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs)
@@ -46,10 +58,32 @@ public class SavedAppsContentProvider extends ContentProvider
 		return true;
 	}
 
-	@Override
-	public Cursor query(Uri table, String[] columns, String selection, String[] selectionArgs, String sortOrder)
+	public boolean onCreate(Context ctxt)
 	{
-		return db.getWritableDatabase().query(table.getPath(), columns, selection, selectionArgs, null, null, sortOrder);
+		db = new SavedAppsSQLiteHelper(ctxt);
+		return true;
+	}
+
+	@Override
+	public Cursor query(Uri uri, String[] columns, String selection, String[] selectionArgs, String sortOrder)
+	{
+		// Uisng SQLiteQueryBuilder instead of query() method
+		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+
+		int uriType = sURIMatcher.match(uri);
+		switch (uriType)
+		{
+			case 0:
+				queryBuilder.setTables(APPS_TABLE_NAME);
+				break;
+			case 1:
+				queryBuilder.setTables(APPS_POLICIES_TABLE_NAME);
+				break;
+		}
+		Cursor cursor = queryBuilder.query(db.getReadableDatabase(), columns, selection, selectionArgs, null, null, sortOrder);
+		cursor.setNotificationUri(getContext().getContentResolver(), uri);
+		return cursor;
+		// return db.getWritableDatabase().query(table.getPath(), columns, selection, selectionArgs, null, null, sortOrder);
 	}
 
 	@Override
@@ -65,11 +99,11 @@ public class SavedAppsContentProvider extends ContentProvider
 		int appId = getAppId(name);
 
 		// Grab all permissions that belong to the app
-//		String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a, " + APPS_POLICIES_TABLE_NAME + " b WHERE a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " AND b."
-//				+ APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;";
+		// String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a, " + APPS_POLICIES_TABLE_NAME + " b WHERE a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " AND b."
+		// + APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;";
 
-		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161/"+APPS_POLICIES_TABLE_NAME),new String[]{"*"},  "a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " AND b."
-				+ APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;",new String[] { appId + "" },null);
+		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161/" + APPS_POLICIES_TABLE_NAME), new String[] { "*" }, "a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID
+				+ " AND b." + APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;", new String[] { appId + "" }, null);
 
 		results.moveToFirst();
 		int count = results.getCount();
@@ -89,8 +123,8 @@ public class SavedAppsContentProvider extends ContentProvider
 	// Grab an app's db id
 	private int getAppId(String name) throws Exception
 	{
-		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161/"+APPS_TABLE_NAME), new String[]{"id"}, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null);
-		
+		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161/" + APPS_TABLE_NAME), new String[] { "id" }, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null);
+
 		if (results.getCount() == 0)
 		{
 			return -1;
