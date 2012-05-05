@@ -102,7 +102,7 @@ public class SavedAppsContentProvider extends ContentProvider
 		// String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a, " + APPS_POLICIES_TABLE_NAME + " b WHERE a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " AND b."
 		// + APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;";
 
-		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161/" + APPS_POLICIES_TABLE_NAME), new String[] { "*" }, "a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID
+		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161.db/saved_apps/" + APPS_POLICIES_TABLE_NAME), new String[] { "*" }, "a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID
 				+ " AND b." + APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;", new String[] { appId + "" }, null);
 
 		results.moveToFirst();
@@ -123,7 +123,7 @@ public class SavedAppsContentProvider extends ContentProvider
 	// Grab an app's db id
 	private int getAppId(String name) throws Exception
 	{
-		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161/" + APPS_TABLE_NAME), new String[] { "id" }, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null);
+		Cursor results = query(Uri.parse("content://edu.cs.berkeley.cs161.db/saved_apps/" + APPS_TABLE_NAME), new String[] { "id" }, APPS_COLUMN_PKG_NAME + "= ?", new String[] { name }, null);
 
 		if (results.getCount() == 0)
 		{
