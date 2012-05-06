@@ -18,8 +18,7 @@ import edu.berkeley.cs.cs161.db.SavedAppsSQLiteHelper;
 
 public class PolicyEdit extends TabActivity {
 
-	public static final String APP_ID = "app_id";
-	public static final String APP_NAME = "name";
+	public static final String APP_NAME = "app_name";
 
 	private static String appId;
 	private static SavedAppsSQLiteHelper sqliteHelper;
@@ -29,7 +28,7 @@ public class PolicyEdit extends TabActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
-		appId = extras.getString(APP_ID);
+		appId = extras.getString(APP_NAME);
 		sqliteHelper = new SavedAppsSQLiteHelper(this);
 		if(extras!=null){
 			setTitle(appId);
@@ -74,7 +73,7 @@ public class PolicyEdit extends TabActivity {
 
 		// Create an Intent to launch an Activity for the tab (to be reused)
 		intent = new Intent().setClass(this, Internet.class);
-		intent.putExtra(APP_ID, appId);
+		intent.putExtra(APP_NAME, appId);
 
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec("internet").setIndicator("Internet").setContent(intent);
@@ -82,17 +81,17 @@ public class PolicyEdit extends TabActivity {
 
 		// Do the same for the other tabs
 		intent = new Intent().setClass(this, FileSystem.class);
-		intent.putExtra(APP_ID, appId);
+		intent.putExtra(APP_NAME, appId);
 		spec = tabHost.newTabSpec("filesys").setIndicator("File System").setContent(intent);
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, PhoneInfo.class);
-		intent.putExtra(APP_ID, appId);
+		intent.putExtra(APP_NAME, appId);
 		spec = tabHost.newTabSpec("phoneinfo").setIndicator("Phone Info").setContent(intent);
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, PhoneFeatures.class);
-		intent.putExtra(APP_ID, appId);
+		intent.putExtra(APP_NAME, appId);
 		spec = tabHost.newTabSpec("phonefeatures").setIndicator("Phone Features").setContent(intent);
 		tabHost.addTab(spec);
 	}

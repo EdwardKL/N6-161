@@ -38,7 +38,7 @@ public class BarleyActivity extends Activity
 	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				Intent edit = new Intent(parent.getContext(), PolicyEdit.class);
 				ResolveInfo item = (ResolveInfo) parent.getItemAtPosition(position);
-				edit.putExtra(PolicyEdit.APP_ID, item.activityInfo.packageName);
+				edit.putExtra(PolicyEdit.APP_NAME, item.activityInfo.packageName);
 				startActivityForResult(edit, ACTIVITY_EDIT);
 	        }
 	    });
