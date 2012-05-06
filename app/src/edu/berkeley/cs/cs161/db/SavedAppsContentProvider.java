@@ -22,6 +22,7 @@ public class SavedAppsContentProvider extends ContentProvider
 	private static final String APPS_POLICIES_COLUMN_POLICIES_ID = "policy_id";
 	private static final String APPS_POLICIES_COLUMN_ENABLED = "enabled";
 
+	private static final String POLICIES_TABLE_NAME = "all_policies";
 	private static final String POLICIES_COLUMN_NAME = "name";
 
 	private static final String AUTHORITY = "edu.berkeley.cs.cs161"+APPS_TABLE_NAME;
@@ -31,6 +32,7 @@ public class SavedAppsContentProvider extends ContentProvider
 	{
 		sURIMatcher.addURI(AUTHORITY, APPS_TABLE_NAME, 0);
 		sURIMatcher.addURI(AUTHORITY, APPS_POLICIES_TABLE_NAME, 1);
+		sURIMatcher.addURI(AUTHORITY, APPS_POLICIES_TABLE_NAME+"+"+POLICIES_TABLE_NAME, 2);
 	}
 
 	@Override
@@ -79,9 +81,11 @@ public class SavedAppsContentProvider extends ContentProvider
 			case 1:
 				queryBuilder.setTables(APPS_POLICIES_TABLE_NAME);
 				break;
+			case 2:
+				queryBuilder.setTables(APPS_POLICIES_TABLE_NAME+","+POLICIES_TABLE_NAME);
+				break;
 		}
 		Cursor cursor = queryBuilder.query(db.getReadableDatabase(), columns, selection, selectionArgs, null, null, sortOrder);
-		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 		return cursor;
 		// return db.getWritableDatabase().query(table.getPath(), columns, selection, selectionArgs, null, null, sortOrder);
 	}
@@ -102,8 +106,8 @@ public class SavedAppsContentProvider extends ContentProvider
 		// String query = "SELECT * FROM " + POLICIES_TABLE_NAME + " a, " + APPS_POLICIES_TABLE_NAME + " b WHERE a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID + " AND b."
 		// + APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;";
 
-		Cursor results = query(Uri.parse("content://" +AUTHORITY+ APPS_POLICIES_TABLE_NAME), new String[] { "*" }, "a.id=b." + APPS_POLICIES_COLUMN_POLICIES_ID
-				+ " AND b." + APPS_POLICIES_COLUMN_APPS_ID + "=? AND b." + APPS_POLICIES_COLUMN_ENABLED + "=1;", new String[] { appId + "" }, null);
+		Cursor results = query(Uri.parse("content://" +AUTHORITY+ APPS_POLICIES_TABLE_NAME+"+"+POLICIES_TABLE_NAME), new String[] { "*" }, POLICIES_TABLE_NAME+".id="+APPS_POLICIES_TABLE_NAME+"." + APPS_POLICIES_COLUMN_POLICIES_ID
+				+ " AND "+APPS_POLICIES_TABLE_NAME+"." + APPS_POLICIES_COLUMN_APPS_ID + "=? AND "+APPS_POLICIES_TABLE_NAME+"." + APPS_POLICIES_COLUMN_ENABLED + "=1;", new String[] { appId + "" }, null);
 
 		results.moveToFirst();
 		int count = results.getCount();
