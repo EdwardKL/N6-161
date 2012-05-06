@@ -8,7 +8,7 @@ import android.widget.ListView;
 public class PhoneInfo extends Activity {
 	
 	public static final String[] policyList = new String[] {"MODIFY_PHONE_STATE", 
-	"READ_PHONE_STATE", "PROCESS_OUTGOING_CALLS"};
+	"READ_PHONE_STATE"};
 	
 	public static String[] policies = new String[policyList.length];
 	

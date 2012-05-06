@@ -8,8 +8,7 @@ import android.widget.ListView;
 public class Internet extends Activity {
 	
 	public static final String[] policyList = new String[] {"ACCESS_NETWORK_STATE", 
-			"ACCESS_WIFI_STATE", "CHANGE_NETWORK_STATE", "CHANGE_WIFI_MULTICAST_STATE",
-			"CHANGE_WIFI_STATE", "INTERNET"};
+			"ACCESS_WIFI_STATE", "INTERNET"};
 	
 	public static String[] policies = new String[policyList.length];
 	

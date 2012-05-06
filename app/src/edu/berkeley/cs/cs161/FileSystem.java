@@ -7,11 +7,9 @@ import android.widget.ListView;
 
 public class FileSystem extends Activity {
 
-	public static final String[] policyList = new String[] {"AUTHENTICATE_ACCOUNTS", 
-		"DELETE_PACKAGES", "INSTALL_PACKAGES", "GET_ACCOUNTS", 
-		"READ_CALENDAR", "READ_CONTACTS", "READ_PROFILE", 
-		"READ_SMS", "WRITE_CALENDAR", "WRITE_CONTACTS", 
-		"WRITE_PROFILE", "WRITE_SMS"};
+	public static final String[] policyList = new String[] {
+		"DELETE_PACKAGES", "INSTALL_PACKAGES", "READ_CONTACTS",  "WRITE_CONTACTS", 
+		"READ_SMS", "WRITE_SMS"};
 	
 	public static String[] policies = new String[policyList.length];
 			
