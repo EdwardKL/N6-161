@@ -12,6 +12,7 @@ public class SavedAppsContentProvider extends ContentProvider
 {
 
 	private static SavedAppsSQLiteHelper db;
+	private static final String DATABASE_NAME = "saved_apps";
 
 	private static final String APPS_TABLE_NAME = "saved_apps";
 	private static final String APPS_PRIMARY_ID = "id";
@@ -25,7 +26,7 @@ public class SavedAppsContentProvider extends ContentProvider
 	private static final String POLICIES_TABLE_NAME = "all_policies";
 	private static final String POLICIES_COLUMN_NAME = "name";
 
-	private static final String AUTHORITY = "edu.berkeley.cs.cs161"+APPS_TABLE_NAME;
+	private static final String AUTHORITY = "edu.berkeley.cs.cs161/"+DATABASE_NAME+"/";
 
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static

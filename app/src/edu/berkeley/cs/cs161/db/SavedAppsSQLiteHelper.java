@@ -9,6 +9,7 @@ import edu.berkeley.cs.cs161.FileSystem;
 import edu.berkeley.cs.cs161.Internet;
 import edu.berkeley.cs.cs161.PhoneFeatures;
 import edu.berkeley.cs.cs161.PhoneInfo;
+import android.util.Log;
 
 public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 {
@@ -104,7 +105,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		{
 			insertPolicyToPolicies(policy);
 		}
-
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -112,6 +121,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	{
 		String sql = "ALTER TABLE " + APPS_POLICIES_TABLE_NAME + " ADD COLUMN " + APPS_POLICIES_COLUMN_ENABLED + " BOOLEAN";
 		db.execSQL(sql);
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public void deleteApp(String pkg_name)
@@ -121,13 +139,26 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	public int insertAppIntoTable(SavedApp input) throws Exception
 	{
-		ContentValues values = new ContentValues();
-		values.put(APPS_COLUMN_PKG_NAME, input.getName());
-		int appId = (int) (db.insert(APPS_TABLE_NAME, null, values));
+		if (getAppId(input.getName()) == -1)
+		{
+			ContentValues values = new ContentValues();
+			values.put(APPS_COLUMN_PKG_NAME, input.getName());
+			int appId = (int) (db.insert(APPS_TABLE_NAME, null, values));
 
-		// Add all the permissions that are currently set
-		setupPermissionsForApp(input.getName(), input.getPermissions(), appId);
-		return appId;
+			// Add all the permissions that are currently set
+			setupPermissionsForApp(input.getName(), input.getPermissions(), appId);
+			try
+			{
+				Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+			}
+			catch (Exception e)
+			{
+				Log.e("Runtime Hack", "Error: " + e.getMessage());
+				e.printStackTrace();
+			}
+			return appId;
+		}
+		throw new Exception("App already exists");
 	}
 
 	private void setupPermissionsForApp(String name, String[] permissions, int appId) throws Exception
@@ -136,6 +167,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		{
 			addPermissionToAppId(name, permission, appId);
 		}
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	// removes permission from an app
@@ -143,6 +183,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	{
 		int appId = getAppId(name);
 		removePermissionFromAppId(name, permission, appId);
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	// get app's id and then call appPermissionToAppId
@@ -150,6 +199,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	{
 		int appId = getAppId(name);
 		addPermissionToAppId(name, permission, appId);
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	// Grab an app's db id
@@ -176,6 +234,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		val.put(APPS_POLICIES_COLUMN_ENABLED, false);
 
 		db.update(APPS_POLICIES_TABLE_NAME, val, APPS_POLICIES_COLUMN_APPS_ID + "=? AND " + APPS_POLICIES_COLUMN_POLICIES_ID + "=?", new String[] { appId + "", policyId + "" });
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	// If we already know what the app's id is just add associate a policy with the app
@@ -206,6 +273,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		values.put(APPS_POLICIES_COLUMN_POLICIES_ID, policyId);
 		db.insert(APPS_POLICIES_TABLE_NAME, null, values);
 		results.close();
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	// Insert an unseen policy into the table of policies
@@ -213,6 +289,15 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	{
 		ContentValues values = new ContentValues();
 		values.put(POLICIES_COLUMN_NAME, name);
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 		return db.insert(POLICIES_TABLE_NAME, null, values);
 	}
 
@@ -220,8 +305,9 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	public String[] getAppPermissions(String name) throws Exception
 	{
 		int appId = getAppId(name);
-		
-		if (appId == -1) {
+
+		if (appId == -1)
+		{
 			return null;
 		}
 
@@ -267,5 +353,5 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	{
 		return new SavedApp(name, getAppPermissions(name));
 	}
-	
+
 }
