@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+from subprocess import call
+import os
+
+print "Please provide an absolute path to the root folder of your Android OS installation..."
+path = raw_input()
+call("cp -R os_contents/* " + path, shell=True)
+os.chdir(path)
+call(". build/envsetup.sh", shell=True)
+call("lunch full-eng", shell=True)
+call("make update-api", shell=True)
+call("make -j16", shell=True)
+print "Your os is now fully modified. Try running the emulator command in your OS installation root."
+#print "Transfer complete. Please run . build/envsetup.sh; lunch full-eng; make update-api; make-j16"
