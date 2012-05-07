@@ -8,7 +8,7 @@ import android.widget.ListView;
 public class PhoneFeatures extends Activity
 {
 
-	public static final String[] policyList = new String[] { "ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION", "SEND_SMS" };
+	public static final String[] policyList = new String[] { "ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION" };
 
 	public static String[] policies = new String[policyList.length];
 

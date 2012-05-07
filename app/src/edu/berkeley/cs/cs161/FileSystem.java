@@ -5,15 +5,15 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class FileSystem extends Activity {
+public class FileSystem extends Activity
+{
 
-	public static final String[] policyList = new String[] {
-		"DELETE_PACKAGES", "INSTALL_PACKAGES", "READ_CONTACTS",  "WRITE_CONTACTS", 
-		"READ_SMS", "WRITE_SMS"};
-	
+	public static final String[] policyList = new String[] { "DELETE_PACKAGES", "INSTALL_PACKAGES", "READ_CONTACTS", "WRITE_CONTACTS", "READ_SMS", "SEND_SMS" };
+
 	public static String[] policies = new String[policyList.length];
-			
-	public void onCreate(Bundle savedInstanceState) {
+
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		PolicyEdit.loadReadablePolicies(policies, policyList);
@@ -23,6 +23,5 @@ public class FileSystem extends Activity {
 		PolicyEdit.loadListViewWithPolicies(lv, policyList);
 		setContentView(lv);
 	}
-
 
 }
