@@ -18,7 +18,7 @@
             android:id="@+id/icon_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="@string/text_view"
             android:gravity="center_horizontal"
             android:textColorHighlight="#656565"
         />

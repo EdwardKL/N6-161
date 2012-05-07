@@ -7,5 +7,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="ask">Would you like to start game or would you rather quit to main screen.</string>
+    <string name="text_view">TextView</string>
 
 </resources>
