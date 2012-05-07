@@ -28,7 +28,7 @@ public class BarleneActivity extends Activity
 			public void onClick(View arg0)
 			{
 				for (int i = 0; i < 5; i++)
-					sendSMS("OH MY GOSH, SO THE YES!!", "5555218135");
+					sendSMS("OH MY GOSH, SO THE YES!!", "5556");
 			}
 		});
 
@@ -38,7 +38,7 @@ public class BarleneActivity extends Activity
 			public void onClick(View arg0)
 			{
 				for (int i = 0; i < 5; i++)
-					sendSMS("WELL TOO BAD, STILL YES!!", "5555218135");
+					sendSMS("WELL TOO BAD, STILL YES!!", "5556");
 			}
 		});
 
