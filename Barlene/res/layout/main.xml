@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:id="@+id/view"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent"
+    android:columnWidth="90dp"
+    android:numColumns="auto_fit"
+    android:verticalSpacing="10dp"
+    android:horizontalSpacing="10dp"
+    android:stretchMode="columnWidth"
+    android:gravity="center"
+>
+
+    <Button
+        android:id="@+id/buttonNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="154dp"
+        android:layout_marginLeft="50dp"
+        android:text="@string/no" />
+
+    <Button
+        android:id="@+id/buttonYes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button1"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="31dp"
+        android:text="@string/yes" />
+
+    <RatingBar
+        android:id="@+id/ratingBar1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="104dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="45dp"
+        android:text="@string/ask" />
+
+</RelativeLayout>

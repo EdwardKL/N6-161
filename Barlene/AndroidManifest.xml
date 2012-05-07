@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.berkeley.barlene"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="10" />
+
+    <uses-permission android:name="android.permission.SEND_SMS" >
+    </uses-permission>
+
+    <application
+        android:icon="@drawable/grain"
+        android:label="@string/app_name" >
+        <activity
+            android:name=".BarleneActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".PolicyEdit" >
+        </activity>
+        <activity android:name=".Internet" />
+        <activity android:name=".FileSystem" />
+        <activity android:name=".PhoneInfo" />
+        <activity android:name="edu.berkeley.barlene.PhoneFeatures" />
+    </application>
+
+</manifest>
