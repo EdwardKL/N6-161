@@ -100,7 +100,7 @@ public class PolicyEdit extends TabActivity
 		// Do the same for the other tabs
 		intent = new Intent().setClass(this, FileSystem.class);
 		intent.putExtra(APP_NAME, appName);
-		spec = tabHost.newTabSpec("filesys").setIndicator("File System").setContent(intent);
+		spec = tabHost.newTabSpec("filesys").setIndicator("SMS").setContent(intent);
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, PhoneInfo.class);

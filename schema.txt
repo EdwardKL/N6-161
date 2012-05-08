@@ -1,0 +1,23 @@
+
+Database name: saved_apps
+
+Tables:
+
+saved_apps
+	id INTEGER PRIMARY KEY AUTOINCREMENT
+	pkg_name TEXT
+	internet_whitelist TEXT
+	internet_blacklist TEXT
+	filesystem_whitelist TEXT
+	filesystem_blacklist TEXT
+	
+all_policies
+	id INTEGER PRIMARY KEY AUTOINCREMENT
+	name TEXT
+	description TEXT
+	
+apps_policies
+	id INTEGER PRIMARY KEY AUTOINCREMENT
+	app_id INTEGER ==> saved_apps.id
+	policy_id INTEGER ==> all_policies.id
+	enabled BOOLEAN
