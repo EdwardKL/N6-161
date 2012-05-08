@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import edu.berkeley.cs.cs161.db.SavedApp;
 import edu.berkeley.cs.cs161.db.SavedAppsSQLiteHelper;
+import edu.berkeley.cs.cs161.db.SavedAppsSQLiteHelper.RegexType;
 
 public class PolicyEdit extends TabActivity
 {
@@ -215,5 +216,16 @@ public class PolicyEdit extends TabActivity
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static String getRegexFromDb(SavedAppsSQLiteHelper.RegexType type) {
+		String ret = "";
+		try {
+			ret = sqliteHelper.getRegexFromApp(appName, type);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ret;
 	}
 }
