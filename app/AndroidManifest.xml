@@ -23,6 +23,8 @@
 		<activity android:name=".FileSystem" />
 		<activity android:name=".PhoneInfo" />
 		<activity android:name=".PhoneFeatures" />
+		<activity android:name=".Additional"></activity>
+		<activity android:name=".AddRegex"></activity>
     </application>
 
 </manifest>
