@@ -116,7 +116,7 @@ public class PolicyEdit extends TabActivity
 		
 		intent = new Intent().setClass(this, Additional.class);
 		intent.putExtra(APP_NAME, appName);
-		spec = tabHost.newTabSpec("additional").setIndicator("Additional").setContent(intent);
+		spec = tabHost.newTabSpec("additional").setIndicator("Regexes").setContent(intent);
 		tabHost.addTab(spec);
 	}
 
