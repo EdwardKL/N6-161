@@ -114,9 +114,9 @@ public class PolicyEdit extends TabActivity
 		spec = tabHost.newTabSpec("phonefeatures").setIndicator("Phone Features").setContent(intent);
 		tabHost.addTab(spec);
 		
-		intent = new Intent().setClass(this, Additional.class);
+		intent = new Intent().setClass(this, Regexes.class);
 		intent.putExtra(APP_NAME, appName);
-		spec = tabHost.newTabSpec("additional").setIndicator("Regexes").setContent(intent);
+		spec = tabHost.newTabSpec("regexes").setIndicator("Regexes").setContent(intent);
 		tabHost.addTab(spec);
 	}
 
@@ -211,6 +211,7 @@ public class PolicyEdit extends TabActivity
 	
 	public static void insertRegexIntoDb(String regex, SavedAppsSQLiteHelper.RegexType type) {
 		try {
+			System.out.println("at least its working " + regex);
 			sqliteHelper.addRegexToApp(appName, regex, type);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -25,6 +25,7 @@
 		<activity android:name=".PhoneFeatures" />
 		<activity android:name=".Additional"></activity>
 		<activity android:name=".AddRegex"></activity>
+		<activity android:name=".Regexes"></activity>
     </application>
 
 </manifest>
