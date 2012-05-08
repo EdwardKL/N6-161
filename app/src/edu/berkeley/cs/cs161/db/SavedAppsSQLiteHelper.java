@@ -208,28 +208,27 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	public void addRegexToApp(String name, String regex, RegexType type) throws Exception
 	{
 		int appId = getAppId(name);
-		String column="null";
+		String column = "null";
 		switch (type)
 		{
 			case FILESYSTEM_BLACKLIST:
-				column = APPS_COLUMN_FILESYSTEM_BLACKLIST;	
+				column = APPS_COLUMN_FILESYSTEM_BLACKLIST;
 				break;
 			case FILESYSTEM_WHITELIST:
-				column = APPS_COLUMN_FILESYSTEM_WHITELIST;	
+				column = APPS_COLUMN_FILESYSTEM_WHITELIST;
 				break;
 			case INTERNET_BLACKLIST:
-				column = APPS_COLUMN_INTERNET_BLACKLIST;	
+				column = APPS_COLUMN_INTERNET_BLACKLIST;
 				break;
 			case INTERNET_WHITELIST:
-				column = APPS_COLUMN_INTERNET_WHITELIST;	
+				column = APPS_COLUMN_INTERNET_WHITELIST;
 				break;
 		}
 		// insert the two foreign keys into the association table
 		ContentValues values = new ContentValues();
 		values.put(column, regex);
 		db.update(APPS_TABLE_NAME, values, APPS_PRIMARY_ID + "=?", new String[] { appId + "" });
-		
-		
+
 		try
 		{
 			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
@@ -239,6 +238,44 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 			Log.e("Runtime Hack", "Error: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	public String getRegexFromApp(String name, RegexType type) throws Exception
+	{
+		int appId = getAppId(name);
+		String column = "null";
+		switch (type)
+		{
+			case FILESYSTEM_BLACKLIST:
+				column = APPS_COLUMN_FILESYSTEM_BLACKLIST;
+				break;
+			case FILESYSTEM_WHITELIST:
+				column = APPS_COLUMN_FILESYSTEM_WHITELIST;
+				break;
+			case INTERNET_BLACKLIST:
+				column = APPS_COLUMN_INTERNET_BLACKLIST;
+				break;
+			case INTERNET_WHITELIST:
+				column = APPS_COLUMN_INTERNET_WHITELIST;
+				break;
+		}
+
+		Cursor results = db.query(APPS_TABLE_NAME, null, APPS_PRIMARY_ID + "= ?", new String[] { appId + "" }, null, null, null);
+
+		results.moveToFirst();
+		String regex = results.getString(results.getColumnIndex(column));
+		results.close();
+
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return regex;
 	}
 
 	// get app's id and then call appPermissionToAppId
