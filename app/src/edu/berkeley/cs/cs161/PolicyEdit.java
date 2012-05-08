@@ -2,11 +2,15 @@ package edu.berkeley.cs.cs161;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckedTextView;
@@ -112,6 +116,11 @@ public class PolicyEdit extends TabActivity
 		intent.putExtra(APP_NAME, appName);
 		spec = tabHost.newTabSpec("phonefeatures").setIndicator("Phone Features").setContent(intent);
 		tabHost.addTab(spec);
+		
+		intent = new Intent().setClass(this, Additional.class);
+		intent.putExtra(APP_NAME, appName);
+		spec = tabHost.newTabSpec("additional").setIndicator("Additional").setContent(intent);
+		tabHost.addTab(spec);
 	}
 
 	public static void loadReadablePolicies(String[] readable, String[] unreadable)
@@ -201,5 +210,14 @@ public class PolicyEdit extends TabActivity
 				}
 			}
 		});
+	}
+	
+	public static void insertRegexIntoDb(String regex, SavedAppsSQLiteHelper.RegexType type) {
+		try {
+			sqliteHelper.addRegexToApp(appName, regex, type);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
