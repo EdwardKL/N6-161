@@ -22,9 +22,9 @@ public class Regexes extends Activity {
 		Button saveButton = (Button)findViewById(R.id.save);
 		
 		blackFile.setText(PolicyEdit.getRegexFromDb(RegexType.values()[0]));
-		blackFile.setText(PolicyEdit.getRegexFromDb(RegexType.values()[1]));
-		blackFile.setText(PolicyEdit.getRegexFromDb(RegexType.values()[2]));
-		blackFile.setText(PolicyEdit.getRegexFromDb(RegexType.values()[3]));
+		whiteFile.setText(PolicyEdit.getRegexFromDb(RegexType.values()[1]));
+		blackInternet.setText(PolicyEdit.getRegexFromDb(RegexType.values()[2]));
+		whiteInternet.setText(PolicyEdit.getRegexFromDb(RegexType.values()[3]));
 		
 		saveButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -40,6 +40,4 @@ public class Regexes extends Activity {
 			}
 		});
 	}
-	
-	
 }

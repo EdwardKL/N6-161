@@ -218,7 +218,6 @@ public class PolicyEdit extends TabActivity
 		String ret = "";
 		try {
 			ret = sqliteHelper.getRegexFromApp(appName, type);
-			System.out.println(ret);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
