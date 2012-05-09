@@ -5,11 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import edu.berkeley.cs.cs161.FileSystem;
 import edu.berkeley.cs.cs161.Internet;
 import edu.berkeley.cs.cs161.PhoneFeatures;
 import edu.berkeley.cs.cs161.PhoneInfo;
-import android.util.Log;
 
 public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 {
@@ -213,6 +213,8 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	public void addRegexToApp(String name, String regex, RegexType type) throws Exception
 	{
 		int appId = getAppId(name);
+		if (appId == -1)
+			throw new Exception("invalid app");
 		String column = "null";
 		switch (type)
 		{
@@ -247,7 +249,10 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	public String getRegexFromApp(String name, RegexType type) throws Exception
 	{
+		System.out.println(name);
 		int appId = getAppId(name);
+		if (appId == -1)
+			throw new Exception("invalid app");
 		String column = "null";
 		switch (type)
 		{
@@ -263,11 +268,20 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 			case INTERNET_WHITELIST:
 				column = APPS_COLUMN_INTERNET_WHITELIST;
 				break;
+			default:
+				throw new Exception("invalid regex type");
 		}
 
 		Cursor results = db.query(APPS_TABLE_NAME, null, APPS_PRIMARY_ID + "= ?", new String[] { appId + "" }, null, null, null);
 
+		System.out.println(results.getCount());
 		results.moveToFirst();
+		for (int i = 0; i < results.getColumnCount(); i++)
+		{
+			System.out.println(i + ": " + results.getColumnName(i));
+		}
+		System.out.println(column);
+		System.out.println(results.getColumnCount());
 		String regex = results.getString(results.getColumnIndex(column));
 		results.close();
 
@@ -440,7 +454,10 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	public SavedApp getApp(String name) throws Exception
 	{
-		return new SavedApp(name, getAppPermissions(name));
+		String[] permissions = getAppPermissions(name);
+		if (permissions != null)
+			return new SavedApp(name, getAppPermissions(name));
+		return null;
 	}
 
 	public void close()
