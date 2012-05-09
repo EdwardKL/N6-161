@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import edu.berkeley.cs.cs161.db.SavedApp;
 import edu.berkeley.cs.cs161.db.SavedAppsSQLiteHelper;
-import edu.berkeley.cs.cs161.db.SavedAppsSQLiteHelper.RegexType;
 
 public class PolicyEdit extends TabActivity
 {

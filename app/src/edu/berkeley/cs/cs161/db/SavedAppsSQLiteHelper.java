@@ -129,9 +129,14 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 	{
-		String sql = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_FILESYSTEM_BLACKLIST + " TEXT, " + APPS_COLUMN_FILESYSTEM_WHITELIST + " TEXT, "
-				+ APPS_COLUMN_INTERNET_BLACKLIST + " TEXT, " + APPS_COLUMN_INTERNET_WHITELIST + " TEXT ";
-		db.execSQL(sql);
+		String sql1 = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_FILESYSTEM_BLACKLIST + " TEXT";
+		String sql2 = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_INTERNET_BLACKLIST + " TEXT";
+		String sql3 = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_FILESYSTEM_WHITELIST + " TEXT";
+		String sql4 = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_INTERNET_WHITELIST + " TEXT";
+		db.execSQL(sql1);
+		db.execSQL(sql2);
+		db.execSQL(sql3);
+		db.execSQL(sql4);
 		try
 		{
 			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
