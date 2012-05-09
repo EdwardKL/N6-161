@@ -8,6 +8,18 @@ public class BarleyEnforcer {
 	private static final String LOGTAG = "BarleyEnforcer";
 	public static final String INTERNET = "INTERNET";
 	public static final String READ_PHONE_STATE = "READ_PHONE_STATE";
+	public static final String MODIFY_PHONE_STATE = "MODIFY_PHONE_STATE";
+	public static final String INSTALL_PACKAGES = "INSTALL_PACKAGES";
+	public static final String DELETE_PACKAGES = "DELETE_PACKAGES";
+	public static final String READ_CONTACTS = "READ_CONTACTS";
+	public static final String WRITE_CONTACTS = "WRITE_CONTACTS";
+	public static final String READ_SMS = "READ_SMS";
+	public static final String WRITE_SMS = "WRITE_SMS";
+	public static final String ACCESS_COARSE_LOCATION = "ACCESS_COARSE_LOCATION";
+	public static final String ACCESS_FINE_LOCATION = "ACCESS_FINE_LOCATION";
+	public static final String CALL_PHONE = "CALL_PHONE";
+	public static final String CAMERA = "CAMERA";
+	public static final String SEND_SMS = "SEND_SMS";
 	
 	// If application @name doesn't have all of @requested_permissions, deny.
 	// Return false if denied, true if allowed.
