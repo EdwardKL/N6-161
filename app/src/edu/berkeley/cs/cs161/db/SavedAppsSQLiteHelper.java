@@ -443,4 +443,8 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 		return new SavedApp(name, getAppPermissions(name));
 	}
 
+	public void close()
+	{
+		db.close();
+	}
 }

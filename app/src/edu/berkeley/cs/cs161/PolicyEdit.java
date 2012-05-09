@@ -168,7 +168,6 @@ public class PolicyEdit extends TabActivity
 		}
 		catch (Exception e1)
 		{
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -186,7 +185,6 @@ public class PolicyEdit extends TabActivity
 					catch (Exception e)
 					{
 						((ListView) parent).setItemChecked(position, false);
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -200,7 +198,6 @@ public class PolicyEdit extends TabActivity
 					catch (Exception e)
 					{
 						check.setChecked(false);
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -213,7 +210,6 @@ public class PolicyEdit extends TabActivity
 			System.out.println("at least its working " + regex);
 			sqliteHelper.addRegexToApp(appName, regex, type);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -223,9 +219,15 @@ public class PolicyEdit extends TabActivity
 		try {
 			ret = sqliteHelper.getRegexFromApp(appName, type);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ret;
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		sqliteHelper.close();
 	}
 }
