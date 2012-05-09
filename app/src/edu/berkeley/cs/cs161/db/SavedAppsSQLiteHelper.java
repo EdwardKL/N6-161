@@ -249,7 +249,6 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	public String getRegexFromApp(String name, RegexType type) throws Exception
 	{
-		System.out.println(name);
 		int appId = getAppId(name);
 		if (appId == -1)
 			throw new Exception("invalid app");
@@ -274,14 +273,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 		Cursor results = db.query(APPS_TABLE_NAME, null, APPS_PRIMARY_ID + "= ?", new String[] { appId + "" }, null, null, null);
 
-		System.out.println(results.getCount());
 		results.moveToFirst();
-		for (int i = 0; i < results.getColumnCount(); i++)
-		{
-			System.out.println(i + ": " + results.getColumnName(i));
-		}
-		System.out.println(column);
-		System.out.println(results.getColumnCount());
 		String regex = results.getString(results.getColumnIndex(column));
 		results.close();
 
