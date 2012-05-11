@@ -26,11 +26,11 @@ public class ImageAdapter extends BaseAdapter {
     public int getCount() {
         return ris.size();
     }
-
+ 
     public Object getItem(int position) {
         return ris.get(position);
     }
-    
+  
     public Object getItemAtPosition(int position){
     	return getItem(position);
     }
@@ -43,7 +43,7 @@ public class ImageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v;
     	ImageView imageView;
-        if (convertView == null) {  // if it's not recycled, initialize some attributes
+	// if (convertView == null) {  // if it's not recycled, initialize some attributes
         	LayoutInflater li = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         	v = li.inflate(R.layout.grid_item, null);
             imageView = (ImageView) v.findViewById(R.id.icon_image);
@@ -53,9 +53,9 @@ public class ImageAdapter extends BaseAdapter {
             imageView.setImageDrawable(ris.get(position).loadIcon(pk));
             TextView tv = (TextView) v.findViewById(R.id.icon_text);
             tv.setText(ris.get(position).activityInfo.name);
-        } else {
-            v = (View) convertView;
-        }
+	    //} else {
+            //v = (View) convertView;
+	    // }
         
         //imageView.setImageResource(ris.get(position).getIconResource());
         return v;

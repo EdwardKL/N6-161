@@ -5,24 +5,34 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import edu.berkeley.cs.cs161.FileSystem;
 import edu.berkeley.cs.cs161.Internet;
 import edu.berkeley.cs.cs161.PhoneFeatures;
 import edu.berkeley.cs.cs161.PhoneInfo;
-import android.util.Log;
 
 public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 {
 
+	public static enum RegexType
+	{
+		FILESYSTEM_BLACKLIST, FILESYSTEM_WHITELIST, INTERNET_BLACKLIST, INTERNET_WHITELIST
+	};
+
 	private static SQLiteDatabase db;
 	private static final String DATABASE_NAME = "saved_apps";
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 4;
 
 	private static final String APPS_TABLE_NAME = "saved_apps";
 	private static final String APPS_PRIMARY_ID = "id";
 	private static final String APPS_COLUMN_PKG_NAME = "pkg_name";
+	private static final String APPS_COLUMN_INTERNET_WHITELIST = "internet_whitelist";
+	private static final String APPS_COLUMN_INTERNET_BLACKLIST = "internet_blacklist";
+	private static final String APPS_COLUMN_FILESYSTEM_WHITELIST = "filesystem_whitelist";
+	private static final String APPS_COLUMN_FILESYSTEM_BLACKLIST = "filesystem_blacklist";
 	private static final String APPS_TABLE_CREATE = "CREATE TABLE " + APPS_TABLE_NAME + " (" + APPS_PRIMARY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT , " + APPS_COLUMN_PKG_NAME
-			+ " TEXT);";
+			+ " TEXT, " + APPS_COLUMN_FILESYSTEM_BLACKLIST + " TEXT, " + APPS_COLUMN_FILESYSTEM_WHITELIST + " TEXT, " + APPS_COLUMN_INTERNET_BLACKLIST + " TEXT, "
+			+ APPS_COLUMN_INTERNET_WHITELIST + " TEXT " + ");";
 
 	private static final String APPS_POLICIES_TABLE_NAME = "apps_policies";
 	private static final String APPS_POLICIES_PRIMARY_ID = "id";
@@ -119,8 +129,14 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 	{
-		String sql = "ALTER TABLE " + APPS_POLICIES_TABLE_NAME + " ADD COLUMN " + APPS_POLICIES_COLUMN_ENABLED + " BOOLEAN";
-		db.execSQL(sql);
+		String sql1 = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_FILESYSTEM_BLACKLIST + " TEXT";
+		String sql2 = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_INTERNET_BLACKLIST + " TEXT";
+		String sql3 = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_FILESYSTEM_WHITELIST + " TEXT";
+		String sql4 = "ALTER TABLE " + APPS_TABLE_NAME + " ADD COLUMN " + APPS_COLUMN_INTERNET_WHITELIST + " TEXT";
+		db.execSQL(sql1);
+		db.execSQL(sql2);
+		db.execSQL(sql3);
+		db.execSQL(sql4);
 		try
 		{
 			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
@@ -135,6 +151,16 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	public void deleteApp(String pkg_name)
 	{
 		db.delete(APPS_TABLE_NAME, APPS_COLUMN_PKG_NAME + "= ?", new String[] { pkg_name });
+
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public int insertAppIntoTable(SavedApp input) throws Exception
@@ -192,6 +218,85 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 			Log.e("Runtime Hack", "Error: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	public void addRegexToApp(String name, String regex, RegexType type) throws Exception
+	{
+		int appId = getAppId(name);
+		if (appId == -1)
+			throw new Exception("invalid app");
+		String column = "null";
+		switch (type)
+		{
+			case FILESYSTEM_BLACKLIST:
+				column = APPS_COLUMN_FILESYSTEM_BLACKLIST;
+				break;
+			case FILESYSTEM_WHITELIST:
+				column = APPS_COLUMN_FILESYSTEM_WHITELIST;
+				break;
+			case INTERNET_BLACKLIST:
+				column = APPS_COLUMN_INTERNET_BLACKLIST;
+				break;
+			case INTERNET_WHITELIST:
+				column = APPS_COLUMN_INTERNET_WHITELIST;
+				break;
+		}
+		// insert the two foreign keys into the association table
+		ContentValues values = new ContentValues();
+		values.put(column, regex);
+		db.update(APPS_TABLE_NAME, values, APPS_PRIMARY_ID + "=?", new String[] { appId + "" });
+
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public String getRegexFromApp(String name, RegexType type) throws Exception
+	{
+		int appId = getAppId(name);
+		if (appId == -1)
+			throw new Exception("invalid app");
+		String column = "null";
+		switch (type)
+		{
+			case FILESYSTEM_BLACKLIST:
+				column = APPS_COLUMN_FILESYSTEM_BLACKLIST;
+				break;
+			case FILESYSTEM_WHITELIST:
+				column = APPS_COLUMN_FILESYSTEM_WHITELIST;
+				break;
+			case INTERNET_BLACKLIST:
+				column = APPS_COLUMN_INTERNET_BLACKLIST;
+				break;
+			case INTERNET_WHITELIST:
+				column = APPS_COLUMN_INTERNET_WHITELIST;
+				break;
+			default:
+				throw new Exception("invalid regex type");
+		}
+
+		Cursor results = db.query(APPS_TABLE_NAME, null, APPS_PRIMARY_ID + "= ?", new String[] { appId + "" }, null, null, null);
+
+		results.moveToFirst();
+		String regex = results.getString(results.getColumnIndex(column));
+		results.close();
+
+		try
+		{
+			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
+		}
+		catch (Exception e)
+		{
+			Log.e("Runtime Hack", "Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return regex;
 	}
 
 	// get app's id and then call appPermissionToAppId
@@ -289,6 +394,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 	{
 		ContentValues values = new ContentValues();
 		values.put(POLICIES_COLUMN_NAME, name);
+		long rt = db.insert(POLICIES_TABLE_NAME, null, values);
 		try
 		{
 			Runtime.getRuntime().exec("chmod 744 /data/data/edu.berkeley.cs.cs161/databases/saved_apps");
@@ -298,7 +404,7 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 			Log.e("Runtime Hack", "Error: " + e.getMessage());
 			e.printStackTrace();
 		}
-		return db.insert(POLICIES_TABLE_NAME, null, values);
+		return rt;
 	}
 
 	// Grab all permissions from a certain app
@@ -351,7 +457,14 @@ public class SavedAppsSQLiteHelper extends SQLiteOpenHelper
 
 	public SavedApp getApp(String name) throws Exception
 	{
-		return new SavedApp(name, getAppPermissions(name));
+		String[] permissions = getAppPermissions(name);
+		if (permissions != null)
+			return new SavedApp(name, getAppPermissions(name));
+		return null;
 	}
 
+	public void close()
+	{
+		db.close();
+	}
 }
